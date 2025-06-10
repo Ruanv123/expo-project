@@ -19,7 +19,7 @@ export default function SignIn() {
     console.log("Email:", email);
     console.log("Senha:", password);
 
-    router.push("/(tabs)/index");
+    router.push("/(tabs)/");
   };
 
   return (

@@ -34,7 +34,10 @@ export default function SettingsScreen() {
         <Image source={{ uri: user.avatar }} style={styles.avatar} />
         <Text style={styles.userName}>{user.name}</Text>
         <Text style={styles.userEmail}>{user.email}</Text>
-        <TouchableOpacity style={styles.editProfileButton}>
+        <TouchableOpacity
+          style={styles.editProfileButton}
+          onPress={() => router.push("/edit-profile")}
+        >
           <Text style={styles.editProfileText}>Editar Perfil</Text>
         </TouchableOpacity>
       </View>
