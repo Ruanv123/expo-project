@@ -1,25 +1,44 @@
+import { Button } from "@/src/components/Button";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { z } from "zod";
+import { TextInput } from "../../components/TextInput";
+
+const signInSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+});
+
+type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleSignIn = () => {
-    console.log("Email:", email);
-    console.log("Senha:", password);
-
-    router.push("/(tabs)/");
+  const onSubmit = (data: SignInFormData) => {
+    // Aqui você implementará a lógica de login
+    console.log("Dados do formulário:", data);
+    router.push("/(tabs)");
   };
 
   return (
@@ -32,40 +51,53 @@ export default function SignIn() {
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>Bem-vindo</Text>
-          <Text style={styles.subtitle}>Faça login para continuar</Text>
+          <Text style={styles.subtitle}>
+            Cadastre sua conta para ter acesso aos nossos serviços
+          </Text>
         </View>
 
         <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Seu email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Email"
+                placeholder="Seu email"
+                value={value}
+                onChangeText={onChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                error={errors.email?.message}
+              />
+            )}
+          />
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Senha</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Sua senha"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-          </View>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Senha"
+                placeholder="Sua senha"
+                value={value}
+                onChangeText={onChange}
+                secureTextEntry
+                error={errors.password?.message}
+              />
+            )}
+          />
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => router.push("/reset-password")}
+          >
             <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+          <Button onPress={handleSubmit(onSubmit)}>
             <Text style={styles.buttonText}>Entrar</Text>
-          </TouchableOpacity>
+          </Button>
 
           <View style={styles.signUpContainer}>
             <Text style={styles.signUpText}>Não tem uma conta? </Text>
@@ -103,22 +135,7 @@ const styles = StyleSheet.create({
     color: "#666",
   },
   form: {
-    gap: 20,
-  },
-  inputContainer: {
     gap: 8,
-  },
-  label: {
-    fontSize: 14,
-    color: "#333",
-    fontWeight: "500",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
   },
   forgotPassword: {
     alignSelf: "flex-end",

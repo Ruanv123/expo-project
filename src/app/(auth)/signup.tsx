@@ -1,3 +1,4 @@
+import { Button } from "@/src/components/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import React from "react";
@@ -8,11 +9,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { z } from "zod";
+import { TextInput } from "../../components/TextInput";
 
 const signUpSchema = z
   .object({
@@ -55,100 +56,74 @@ const SignUpPage = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Criar Conta</Text>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Nome</Text>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder="Digite seu nome"
-                  placeholderTextColor="#666"
-                />
-              )}
-            />
-            {errors.name && (
-              <Text style={styles.errorText}>{errors.name.message}</Text>
-            )}
+          <View style={styles.header}>
+            <Text style={styles.title}>Bem-vindo</Text>
+            <Text style={styles.subtitle}>Faça login para continuar</Text>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
-            <Controller
-              control={control}
-              name="email"
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder="Digite seu email"
-                  placeholderTextColor="#666"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
-            />
-            {errors.email && (
-              <Text style={styles.errorText}>{errors.email.message}</Text>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Nome"
+                value={value}
+                onChangeText={onChange}
+                placeholder="Digite seu nome"
+                error={errors.name?.message}
+              />
             )}
-          </View>
+          />
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Senha</Text>
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder="Digite sua senha"
-                  placeholderTextColor="#666"
-                  secureTextEntry
-                />
-              )}
-            />
-            {errors.password && (
-              <Text style={styles.errorText}>{errors.password.message}</Text>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Email"
+                value={value}
+                onChangeText={onChange}
+                placeholder="Digite seu email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                error={errors.email?.message}
+              />
             )}
-          </View>
+          />
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Confirmar Senha</Text>
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  value={value}
-                  onChangeText={onChange}
-                  placeholder="Confirme sua senha"
-                  placeholderTextColor="#666"
-                  secureTextEntry
-                />
-              )}
-            />
-            {errors.confirmPassword && (
-              <Text style={styles.errorText}>
-                {errors.confirmPassword.message}
-              </Text>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Senha"
+                value={value}
+                onChangeText={onChange}
+                placeholder="Digite sua senha"
+                secureTextEntry
+                error={errors.password?.message}
+              />
             )}
-          </View>
+          />
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit(onSubmit)}
-          >
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Confirmar Senha"
+                value={value}
+                onChangeText={onChange}
+                placeholder="Confirme sua senha"
+                secureTextEntry
+                error={errors.confirmPassword?.message}
+              />
+            )}
+          />
+
+          <Button onPress={handleSubmit(onSubmit)}>
             <Text style={styles.buttonText}>Cadastrar</Text>
-          </TouchableOpacity>
+          </Button>
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Já tem uma conta? </Text>
@@ -179,32 +154,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  header: {
+    marginBottom: 40,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 30,
-    textAlign: "center",
     color: "#333",
+    marginBottom: 8,
   },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
+  subtitle: {
     fontSize: 16,
-    marginBottom: 5,
-    color: "#333",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  errorText: {
-    color: "#ff0000",
-    fontSize: 12,
-    marginTop: 5,
+    color: "#666",
   },
   button: {
     backgroundColor: "#007AFF",
