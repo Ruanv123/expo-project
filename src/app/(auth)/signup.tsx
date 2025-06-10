@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -11,29 +12,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// import { z } from "zod";
+import { z } from "zod";
 
-// const signUpSchema = z
-//   .object({
-//     name: z.string().min(1, "Nome é obrigatório"),
-//     email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
-//     password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-//     confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
-//   })
-//   .refine((data) => data.password === data.confirmPassword, {
-//     message: "As senhas não coincidem",
-//     path: ["confirmPassword"],
-//   });
+const signUpSchema = z
+  .object({
+    name: z.string().min(1, "Nome é obrigatório"),
+    email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
+    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+    confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
 
-// type SignUpFormData = z.infer<typeof signUpSchema>;
+type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUpPage = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    // resolver: zodResolver(signUpSchema),
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -42,7 +43,7 @@ const SignUpPage = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: SignUpFormData) => {
     // Aqui você implementará a lógica de cadastro
     console.log("Dados do formulário:", data);
   };
@@ -199,7 +200,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: "#f9f9f9",
   },
   errorText: {
     color: "#ff0000",
